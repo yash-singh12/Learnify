@@ -1,131 +1,578 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personalized Learning Path</title>
+    <title>Learnify - Personalized Learning Paths</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0 auto;
-            padding: 2rem;
-            background-color: #f5f5f7;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
-        h1 {
-            text-align: center;
-            color: #111;
-        }
+
         .container {
-            background: white;
-            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .input-group {
-            margin-bottom: 1rem;
+
+        nav h1 {
+            font-size: 1.5rem;
+            color: #667eea;
         }
+
+        nav .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Content Area */
+        .content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            min-height: 500px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
         label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            padding: 1rem;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        #results {
-            margin-top: 2rem;
-        }
-        .result-card {
-            background: #fff;
-            border: 1px solid #eee;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid #007bff;
-        }
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        .result-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin: 0;
-        }
-        .result-score {
-            background: #e9ecef;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
             color: #555;
         }
-        .result-desc {
-            color: #666;
-            line-height: 1.5;
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
         }
-        .loading {
-            text-align: center;
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            padding: 0.875rem 1.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        /* Tags Input */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            min-height: 45px;
+        }
+
+        .tag {
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Stages */
+        .stage {
+            margin-bottom: 2rem;
+        }
+
+        .stage-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .stage-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .stage-header p {
+            margin: 0.25rem 0 0 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .course-list {
+            border: 2px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .course-card {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.2s;
+        }
+
+        .course-card:last-child {
+            border-bottom: none;
+        }
+
+        .course-card:hover {
+            background: #f8f9ff;
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .course-score {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .course-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .course-meta span {
+            font-size: 0.85rem;
             color: #666;
+            background: #f5f5f5;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .course-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-rationale {
+            color: #764ba2;
+            font-size: 0.9rem;
             font-style: italic;
         }
-        .error {
-            color: #dc3545;
-            text-align: center;
+
+        .course-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Roadmap List */
+        .roadmap-item {
+            padding: 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .roadmap-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+        }
+
+        .roadmap-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .roadmap-meta {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        /* Alert */
+        .alert {
             padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
             background: #f8d7da;
-            border-radius: 6px;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .course-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>Personalized Learning Path</h1>
-        <p style="text-align: center; margin-bottom: 2rem; color: #666;">Enter your interests to generate a custom curriculum.</p>
-        
-        <div class="input-group">
-            <label for="interest-1">Interest 1</label>
-            <input type="text" id="interest-1" placeholder="e.g. Machine Learning">
-        </div>
-        <div class="input-group">
-            <label for="interest-2">Interest 2</label>
-            <input type="text" id="interest-2" placeholder="e.g. Python">
-        </div>
-        <div class="input-group">
-            <label for="interest-3">Interest 3</label>
-            <input type="text" id="interest-3" placeholder="e.g. Data Visualization">
-        </div>
+        <nav>
+            <h1>🎓 Learnify</h1>
+            <div class="nav-links">
+                <a href="#profile" class="nav-link">Profile</a>
+                <a href="#generate" class="nav-link">Generate Path</a>
+                <a href="#roadmaps" class="nav-link">My Roadmaps</a>
+            </div>
+        </nav>
 
-        <button id="generate-btn">Generate Path</button>
+        <div class="content">
+            <!-- Profile Page -->
+            <div id="profile-page" class="page">
+                <h2>👤 Your Profile</h2>
+                <div id="profile-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" placeholder="Enter your username">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="your.email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Skills / Interests (press Enter to add)</label>
+                        <input type="text" id="skill-input" placeholder="e.g., Python, Web Development">
+                        <div id="skills-tags" class="tags-container" style="margin-top: 0.5rem;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="skill-level">Skill Level</label>
+                        <select id="skill-level">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="hours-per-week">Hours per Week</label>
+                        <input type="number" id="hours-per-week" value="10" min="1" max="40">
+                    </div>
+                    <div class="form-group">
+                        <label for="preferred-language">Preferred Language</label>
+                        <select id="preferred-language">
+                            <option value="English">English</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="French">French</option>
+                            <option value="German">German</option>
+                            <option value="Chinese">Chinese</option>
+                        </select>
+                    </div>
+                    <button id="save-profile-btn">Save Profile</button>
+                </div>
+            </div>
 
-        <div id="results"></div>
+            <!-- Generate Path Page -->
+            <div id="generate-page" class="page">
+                <h2>🚀 Generate Learning Path</h2>
+                <div class="form-group">
+                    <label for="skill-text">Current Skills / What you know</label>
+                    <input type="text" id="skill-text" placeholder="e.g., Basic Python, HTML/CSS">
+                </div>
+                <div class="form-group">
+                    <label for="goal-text">Goal / What you want to become</label>
+                    <input type="text" id="goal-text" placeholder="e.g., Full-stack developer, Data scientist">
+                </div>
+                <div class="form-group">
+                    <label for="interests-text">Additional Interests (comma-separated)</label>
+                    <input type="text" id="interests-text" placeholder="e.g., Machine Learning, React, APIs">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="project-based">
+                        <span>Focus on project-based learning</span>
+                    </label>
+                </div>
+                <button id="generate-btn">Generate Learning Path</button>
+
+                <div id="results-container" style="margin-top: 2rem;"></div>
+            </div>
+
+            <!-- Roadmaps List Page -->
+            <div id="roadmaps-page" class="page">
+                <h2>📚 My Roadmaps</h2>
+                <div id="roadmaps-list"></div>
+            </div>
+
+            <!-- Roadmap Detail Page -->
+            <div id="roadmap-detail-page" class="page">
+                <button id="back-to-roadmaps" class="btn-secondary" style="margin-bottom: 1rem;">← Back to
+                    Roadmaps</button>
+                <div id="roadmap-detail-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Modal -->
+    <div id="rating-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Rate this Course</h3>
+            </div>
+            <p id="rating-course-title" style="margin-bottom: 1rem; color: #666;"></p>
+            <div class="form-group">
+                <label>Your Rating (1-5 stars)</label>
+                <select id="rating-select">
+                    <option value="5">⭐⭐⭐⭐⭐ (5 - Excellent)</option>
+                    <option value="4">⭐⭐⭐⭐ (4 - Very Good)</option>
+                    <option value="3">⭐⭐⭐ (3 - Good)</option>
+                    <option value="2">⭐⭐ (2 - Fair)</option>
+                    <option value="1">⭐ (1 - Poor)</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeRatingModal()">Cancel</button>
+                <button onclick="submitRating()">Submit Rating</button>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>
 </body>
+
 </html>
