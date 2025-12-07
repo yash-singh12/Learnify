@@ -172,6 +172,15 @@ def update_profile(user_id: str, req: UpdateProfileRequest):
         raise HTTPException(status_code=404, detail="User not found or update failed")
     return {"status": "updated", "user_id": user_id}
 
+@app.get("/api/users/by-email/{email}")
+def get_user_by_email(email: str):
+    """Get user profile by email address."""
+    user = db.get_user_by_email(email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
 # -------- PATH GENERATION --------
 
 @app.post("/api/generate")
@@ -240,8 +249,11 @@ def generate_path(req: GeneratePathRequest):
         for c in top_candidates
     ]
     
+    # Build clean display query for user
+    display_query = recommender.build_display_query_text(req.dict(), user)
+    
     return {
-        "query": query_text,
+        "query": display_query,
         "stages": stages,
         "raw_candidates": raw_candidates,
         "total_matches": len(scored_courses)

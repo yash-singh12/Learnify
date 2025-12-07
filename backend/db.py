@@ -64,6 +64,21 @@ def update_user_profile(user_id: str, profile_data: dict) -> bool:
         client.close()
         return False
 
+def get_user_by_email(email: str) -> Optional[dict]:
+    """Get user by email address."""
+    col, client = get_collection("users")
+    try:
+        user = col.find_one({"email": email})
+        if user:
+            user["id"] = str(user["_id"])
+            del user["_id"]
+        client.close()
+        return user
+    except:
+        client.close()
+        return None
+
+
 def add_roadmap_to_user(user_id: str, roadmap_id: str) -> bool:
     """Add roadmap ID to user's saved roadmaps list."""
     col, client = get_collection("users")

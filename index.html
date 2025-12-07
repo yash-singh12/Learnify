@@ -428,6 +428,48 @@
             opacity: 0.3;
         }
 
+        /* Current User Info */
+        .current-user {
+            background: #e8f4fd;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .current-user strong {
+            color: #667eea;
+        }
+
+        .find-profile-btn {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .find-profile-btn button {
+            background: #6c757d;
+        }
+
+        .find-profile-btn button:hover {
+            background: #5a6268;
+        }
+
+        #find-profile-modal input {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 1rem 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        #find-profile-modal p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             nav {
@@ -448,6 +490,12 @@
                 flex-direction: column;
                 gap: 0.5rem;
             }
+
+            .current-user {
+                flex-direction: column;
+                gap: 0.75rem;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -467,6 +515,15 @@
             <!-- Profile Page -->
             <div id="profile-page" class="page">
                 <h2>👤 Your Profile</h2>
+
+                <!-- Current User Info -->
+                <div id="current-user-info" class="current-user" style="display: none;">
+                    <div>
+                        <span>👤 Logged in as: <strong id="current-user-email"></strong></span>
+                    </div>
+                    <button onclick="switchUser()" class="btn-secondary">Switch User</button>
+                </div>
+
                 <div id="profile-form">
                     <div class="form-group">
                         <label for="username">Username</label>
@@ -504,6 +561,13 @@
                         </select>
                     </div>
                     <button id="save-profile-btn">Save Profile</button>
+
+                    <!-- Find My Profile Button -->
+                    <div class="find-profile-btn">
+                        <button onclick="showFindProfileModal()" class="btn-secondary">
+                            🔍 Find My Profile
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -568,6 +632,19 @@
             <div class="modal-actions">
                 <button class="btn-secondary" onclick="closeRatingModal()">Cancel</button>
                 <button onclick="submitRating()">Submit Rating</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Find My Profile Modal -->
+    <div id="find-profile-modal" class="modal">
+        <div class="modal-content">
+            <h3>🔍 Find My Profile</h3>
+            <p>Enter your email to retrieve your profile</p>
+            <input type="email" id="find-email" placeholder="your@email.com" />
+            <div class="modal-actions">
+                <button onclick="findProfileByEmail()">Find Profile</button>
+                <button onclick="closeFindProfileModal()" class="btn-secondary">Cancel</button>
             </div>
         </div>
     </div>

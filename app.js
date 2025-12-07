@@ -115,6 +115,9 @@ async function loadUserProfile(userId) {
         userSkills = user.skills || [];
         renderSkillsTags();
 
+        // Update user info display
+        updateUserInfo(user.email);
+
     } catch (error) {
         console.error('Error loading profile:', error);
     }
@@ -181,6 +184,7 @@ async function saveProfile() {
             if (!response.ok) throw new Error('Failed to update profile');
 
             showAlert('Profile updated successfully!', 'success');
+            updateUserInfo(email);
 
         } else {
             // Create new user
@@ -203,6 +207,7 @@ async function saveProfile() {
             localStorage.setItem(LS_USER_ID, data.user_id);
 
             showAlert('Profile created successfully!', 'success');
+            updateUserInfo(email);
         }
 
         setTimeout(() => navigateTo('generate'), 1500);
@@ -213,6 +218,70 @@ async function saveProfile() {
     } finally {
         btn.disabled = false;
         btn.textContent = 'Save Profile';
+    }
+}
+
+function updateUserInfo(email) {
+    if (email) {
+        document.getElementById('current-user-email').textContent = email;
+        document.getElementById('current-user-info').style.display = 'flex';
+        localStorage.setItem('learnify_user_email', email);
+    } else {
+        document.getElementById('current-user-info').style.display = 'none';
+    }
+}
+
+function switchUser() {
+    if (confirm('Switch user? This will clear your current session.')) {
+        localStorage.removeItem(LS_USER_ID);
+        localStorage.removeItem('learnify_user_email');
+        document.getElementById('current-user-info').style.display = 'none';
+        showAlert('Logged out. You can now create a new profile or find an existing one.', 'info');
+        location.reload();
+    }
+}
+
+function showFindProfileModal() {
+    document.getElementById('find-profile-modal').classList.add('active');
+    document.getElementById('find-email').value = '';
+}
+
+function closeFindProfileModal() {
+    document.getElementById('find-profile-modal').classList.remove('active');
+}
+
+async function findProfileByEmail() {
+    const email = document.getElementById('find-email').value.trim();
+    if (!email) {
+        showAlert('Please enter your email', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/api/users/by-email/${encodeURIComponent(email)}`);
+        if (!response.ok) {
+            if (response.status === 404) {
+                showAlert('No profile found with this email. Please create a new profile.', 'error');
+            } else {
+                throw new Error('Failed to find profile');
+            }
+            return;
+        }
+
+        const user = await response.json();
+        localStorage.setItem(LS_USER_ID, user.id);
+        showAlert('Profile found! Loading...', 'success');
+        closeFindProfileModal();
+
+        setTimeout(() => {
+            loadUserProfile(user.id);
+            updateUserInfo(user.email);
+            navigateTo('generate');
+        }, 1000);
+
+    } catch (error) {
+        console.error('Error finding profile:', error);
+        showAlert('Failed to find profile', 'error');
     }
 }
 

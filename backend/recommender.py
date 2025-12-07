@@ -315,9 +315,13 @@ def sequence_into_stages(
         del course['factors']
     
     # Partition into stages
-    beginner_courses = [c for c in top_courses if c.get('difficulty') == 'beginner']
-    advanced_courses = [c for c in top_courses if c.get('difficulty') in ['intermediate', 'advanced']]
+    # First, identify project courses
     project_courses = [c for c in top_courses if c.get('is_project') or c.get('course_type') == 'project']
+    project_course_ids = {c.get('id') for c in project_courses}
+    
+    # Exclude project courses from beginner and advanced sections
+    beginner_courses = [c for c in top_courses if c.get('difficulty') == 'beginner' and c.get('id') not in project_course_ids]
+    advanced_courses = [c for c in top_courses if c.get('difficulty') in ['intermediate', 'advanced'] and c.get('id') not in project_course_ids]
     
     # If project-based preference, boost project courses in advanced stage
     if project_based_preference and not project_courses:
@@ -349,13 +353,16 @@ def sequence_into_stages(
             "name": "Advanced",
             "description": "Intermediate and advanced courses to deepen expertise",
             "courses": advanced_courses[:7]
-        },
-        {
+        }
+    ]
+    
+    # Only add Projects stage if user selected project-based preference
+    if project_based_preference and project_courses:
+        stages.append({
             "name": "Projects",
             "description": "Hands-on projects to apply your knowledge",
             "courses": project_courses[:3]
-        }
-    ]
+        })
     
     return stages
 
@@ -390,3 +397,34 @@ def build_user_query_text(request_data: dict, user_data: dict) -> str:
     
     query_text = " ".join([p for p in parts if p])
     return query_text
+
+def build_display_query_text(request_data: dict, user_data: dict) -> str:
+    """Build clean display query text without repetitions for showing to user."""
+    parts = []
+    
+    # Current skills
+    skill_text = request_data.get('skill_text', '').strip()
+    if skill_text:
+        parts.append(skill_text)
+    
+    # Goal (only once for display)
+    goal_text = request_data.get('goal_text', '').strip()
+    if goal_text:
+        parts.append(goal_text)
+    
+    # Interests
+    if request_data.get('interests'):
+        interest_str = ", ".join(request_data['interests'])
+        parts.append(interest_str)
+    
+    # Language
+    if request_data.get('language'):
+        parts.append(request_data['language'])
+    elif user_data.get('preferred_language'):
+        parts.append(user_data['preferred_language'])
+    
+    # Project preference
+    if request_data.get('project_based'):
+        parts.append("project-based")
+    
+    return ", ".join([p for p in parts if p])
