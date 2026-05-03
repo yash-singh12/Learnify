@@ -14,8 +14,8 @@ from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 import numpy as np
 
-# Add backend directory to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'backend'))
+# Add src directory to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
 import backend.db as db
 import backend.recommender as recommender

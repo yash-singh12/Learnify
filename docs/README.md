@@ -28,49 +28,7 @@ A sophisticated learning recommendation system that generates personalized cours
 - Responsive SPA frontend with hash-based routing
 - LocalStorage-based user persistence (no authentication required for prototype)
 
-## � Project Structure
-
-```
-Learnify/
-├── main.py                      # FastAPI application entry point
-├── requirements.txt             # Python dependencies
-├── .env.example                # Example environment configuration
-├── README.md                    # Project documentation
-│
-├── src/                         # Source code (modular organization)
-│   ├── backend/                # Backend API logic
-│   │   ├── db.py              # MongoDB database operations
-│   │   ├── recommender.py     # Multi-factor recommendation algorithm
-│   │   └── embedding.py       # Semantic embedding generation
-│   └── frontend/               # Frontend UI (SPA)
-│       ├── index.html         # Main HTML file
-│       └── app.js             # Frontend logic and routing
-│
-├── scripts/                     # Utility scripts
-│   ├── insert_dummy_courses.py # Load course data from JSON
-│   ├── backup_db.sh           # Database backup script
-│   └── data/
-│       └── courses_dummy.json  # Sample course data
-│
-└── docs/                        # Documentation
-    ├── README.md              # Copy of main README
-    ├── QUICK_REF.md          # Quick reference guide
-    ├── INTERVIEW_PREP.md     # Interview preparation notes
-    └── ppt_content.md        # Presentation content
-```
-
-### Key Components
-
-| Component | Purpose |
-|-----------|---------|
-| **main.py** | FastAPI server with 13 REST endpoints |
-| **db.py** | MongoDB operations (CRUD for users, courses, roadmaps) |
-| **recommender.py** | Multi-factor scoring algorithm (5 scoring factors) |
-| **embedding.py** | Sentence-Transformer semantic embeddings |
-| **app.js** | Frontend SPA with hash-based routing |
-| **index.html** | Responsive UI for user interactions |
-
-## �🚀 Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 - Python 3.8+
@@ -106,14 +64,14 @@ ADMIN_TOKEN=your_secret_token_here
 TARGET_WEEKS=8
 ```
 
-4. **Insert sample course data**
+4. **Insert sample course data** (if not already done)
 ```bash
-python3 scripts/insert_dummy_courses.py
+python3 insert_dummy_courses.py
 ```
 
 5. **Compute embeddings for courses**
 ```bash
-python3 src/backend/embedding.py --force
+python3 backend/embedding.py --force
 ```
 
 6. **Start the backend server**
@@ -123,10 +81,8 @@ uvicorn main:app --reload --port 8000
 
 7. **Open the frontend**
 ```bash
-# Frontend files are in src/frontend/
-# Open src/frontend/index.html in your browser
-# Or use a simple HTTP server from the src/frontend directory:
-cd src/frontend
+# Simply open index.html in your browser
+# Or use a simple HTTP server:
 python3 -m http.server 8080
 # Then visit http://localhost:8080
 ```
